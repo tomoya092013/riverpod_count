@@ -19,44 +19,48 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends ConsumerWidget {
+class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
 
-  int _counter = 0;
-
-  void _incrementCounter() {}
-
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme
-            .of(context)
-            .colorScheme
-            .inversePrimary,
-        title: Text(ref.watch(titleProvider)),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Consumer(
+          builder: (BuildContext context, WidgetRef ref, Widget? child) =>
+              Text(ref.watch(titleProvider)),
+        ),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: .center,
           children: [
-            Text(ref.watch(messageProvider)),
+            Consumer(
+              builder: (context, ref, child) =>
+                  Text(ref.watch(messageProvider)),
+            ),
             const SizedBox(height: 16),
             const Text('You have pushed the button this many times:'),
-            Text(
-              ref.watch(countProvider).toString(),
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .headlineMedium,
+            Consumer(
+              builder: (context, ref, child) {
+                return Text(
+                  ref.watch(countProvider).toString(),
+                  style: Theme.of(context).textTheme.headlineMedium,
+                );
+              },
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => ref.read(countProvider.notifier).state++,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      floatingActionButton: Consumer(
+        builder: (context, ref, child) {
+          return FloatingActionButton(
+            onPressed: () => ref.read(countProvider.notifier).state++,
+            tooltip: 'Increment',
+            child: const Icon(Icons.add),
+          );
+        },
       ),
     );
   }
