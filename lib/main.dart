@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_count/provider.dart';
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends ConsumerStatefulWidget {
-  MyHomePage({super.key});
+  const MyHomePage({super.key});
 
   @override
   ConsumerState<MyHomePage> createState() => _MyHomePageState();
@@ -45,13 +46,31 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
               ref.watch(countProvider).toString(),
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                FloatingActionButton(
+                  onPressed: () => ref.read(countProvider.notifier).state++,
+                  tooltip: 'Increment',// モバイルでは長押しの時に表示される
+                  child: Icon(CupertinoIcons.minus),
+                ),
+                FloatingActionButton(
+                  onPressed: () => ref.read(countProvider.notifier).state++,
+                  child: const Icon(CupertinoIcons.add),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+              Text("1"),Text("2"),
+            ],)
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => ref.read(countProvider.notifier).state++,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        child: const Icon(CupertinoIcons.refresh),
       ),
     );
   }
