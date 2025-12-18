@@ -28,10 +28,12 @@ class MyHomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Theme
+            .of(context)
+            .colorScheme
+            .inversePrimary,
         title: Text(ref.watch(titleProvider)),
       ),
       body: Center(
@@ -43,13 +45,16 @@ class MyHomePage extends ConsumerWidget {
             const Text('You have pushed the button this many times:'),
             Text(
               ref.watch(countProvider).toString(),
-              style: Theme.of(context).textTheme.headlineMedium,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .headlineMedium,
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () => ref.read(countProvider.notifier).state++,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
