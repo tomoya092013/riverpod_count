@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_count/provider.dart';
 
+import 'data/count_data.dart';
+
 void main() {
   runApp(ProviderScope(child: const MyApp()));
 }
@@ -43,19 +45,33 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
             const SizedBox(height: 16),
             const Text('You have pushed the button this many times:'),
             Text(
-              ref.watch(countProvider).toString(),
+              ref.watch(countDataProvider).count.toString(),
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 FloatingActionButton(
-                  onPressed: () => ref.read(countProvider.notifier).state++,
-                  tooltip: 'Increment',// モバイルでは長押しの時に表示される
-                  child: Icon(CupertinoIcons.minus),
+                  onPressed: () {
+                    final countData = ref.read(countDataProvider);
+                    ref.read(countDataProvider.notifier).state = countData
+                        .copyWith(
+                          count: countData.count - 1,
+                          countDown: countData.countDown + 1,
+                        );
+                  },
+                  tooltip: 'Decrement',
+                  child: const Icon(CupertinoIcons.minus),
                 ),
                 FloatingActionButton(
-                  onPressed: () => ref.read(countProvider.notifier).state++,
+                  onPressed: () {
+                    final countData = ref.read(countDataProvider);
+                    ref.read(countDataProvider.notifier).state = countData
+                        .copyWith(
+                          count: countData.count + 1,
+                          countUp: countData.countUp + 1,
+                        );
+                  },
                   child: const Icon(CupertinoIcons.add),
                 ),
               ],
@@ -63,13 +79,22 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-              Text("1"),Text("2"),
-            ],)
+                Text(ref.watch(countDataProvider).countDown.toString()),
+                Text(ref.watch(countDataProvider).countUp.toString()),
+              ],
+            ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => ref.read(countProvider.notifier).state++,
+        onPressed: () {
+          final CountData countData = ref.read(countDataProvider);
+          ref.read(countDataProvider.notifier).state = countData.copyWith(
+            count: 0,
+            countUp: 0,
+            countDown: 0,
+          );
+        },
         child: const Icon(CupertinoIcons.refresh),
       ),
     );
