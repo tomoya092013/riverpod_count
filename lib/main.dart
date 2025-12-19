@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_count/provider.dart';
+import 'package:riverpod_count/view_model.dart';
 
 import 'data/count_data.dart';
 
@@ -30,6 +31,15 @@ class MyHomePage extends ConsumerStatefulWidget {
 }
 
 class _MyHomePageState extends ConsumerState<MyHomePage> {
+  ViewModel _viewModel = ViewModel();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _viewModel.setRef(ref);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,56 +55,32 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
             const SizedBox(height: 16),
             const Text('You have pushed the button this many times:'),
             Text(
-              ref.watch(countDataProvider).count.toString(),
+              _viewModel.count,
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 FloatingActionButton(
-                  onPressed: () {
-                    final countData = ref.read(countDataProvider);
-                    ref.read(countDataProvider.notifier).state = countData
-                        .copyWith(
-                          count: countData.count - 1,
-                          countDown: countData.countDown + 1,
-                        );
-                  },
+                  onPressed: _viewModel.onDecrease,
                   tooltip: 'Decrement',
                   child: const Icon(CupertinoIcons.minus),
                 ),
                 FloatingActionButton(
-                  onPressed: () {
-                    final countData = ref.read(countDataProvider);
-                    ref.read(countDataProvider.notifier).state = countData
-                        .copyWith(
-                          count: countData.count + 1,
-                          countUp: countData.countUp + 1,
-                        );
-                  },
+                  onPressed: _viewModel.onIncrease,
                   child: const Icon(CupertinoIcons.add),
                 ),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Text(ref.watch(countDataProvider).countDown.toString()),
-                Text(ref.watch(countDataProvider).countUp.toString()),
-              ],
+              children: [Text(_viewModel.countDown), Text(_viewModel.countUp)],
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          final CountData countData = ref.read(countDataProvider);
-          ref.read(countDataProvider.notifier).state = countData.copyWith(
-            count: 0,
-            countUp: 0,
-            countDown: 0,
-          );
-        },
+        onPressed: _viewModel.onReset,
         child: const Icon(CupertinoIcons.refresh),
       ),
     );
